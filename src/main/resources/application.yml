@@ -5,8 +5,11 @@ spring:
 app:
   jwt:
     secret: "DigitalDetoxSuperSecretKeyForJWT2024ChangeInProduction!!"
-    expiration-ms: 86400000  # 24 ore
+    expiration-ms: 86400000
 
+# =========================
+# DEV (H2)
+# =========================
 ---
 spring:
   config:
@@ -35,7 +38,7 @@ spring:
 
   simulation:
     enabled: true
-    schedule-cron: "0 */5 * * * *"  # ogni 5 minuti
+    schedule-cron: "0 */5 * * * *"
 
 logging:
   level:
@@ -45,6 +48,9 @@ logging:
 server:
   port: 8080
 
+# =========================
+# PROD (PostgreSQL - Railway)
+# =========================
 ---
 spring:
   config:
@@ -52,18 +58,18 @@ spring:
       on-profile: prod
 
   datasource:
-    url: jdbc:mysql://localhost:3306/digitaldetox?useSSL=false&serverTimezone=UTC
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update   # puoi mettere validate in futuro
     show-sql: false
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
   simulation:
     enabled: false
