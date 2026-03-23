@@ -1,0 +1,7 @@
+target/
+data/
+*.db
+*.trace.db
+.idea/
+*.iml
+.DS_Store

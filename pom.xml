@@ -73,6 +73,13 @@
       <scope>runtime</scope>
     </dependency>
 
+<!-- Postegre -->
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
     <!-- MySQL (prod) -->
     <dependency>
       <groupId>com.mysql</groupId>

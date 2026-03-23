@@ -1,0 +1,115 @@
+2026-03-14 15:00:39.961160+01:00 jdbc[34]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "[*]FOCUS_SESSIONS"; SQL statement:
+FOCUS_SESSIONS [42000-224]
+2026-03-14 15:39:40.671662+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "PUZZLE_PROGRESS" not found; SQL statement:
+DELETE FROM puzzle_progress WHERE user_id > 3 [42102-224]
+2026-03-14 16:38:36.234145+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "delete [*]* from points_log where user_id < 71"; expected "identifier"; SQL statement:
+delete * from points_log where user_id < 71 [42001-224]
+2026-03-14 16:38:55.038569+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "delete [*]* from points_log where user_id < 71"; expected "identifier"; SQL statement:
+delete * from points_log where user_id < 71 [42001-224]
+2026-03-14 16:38:55.536497+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "delete [*]* from points_log where user_id < 71"; expected "identifier"; SQL statement:
+delete * from points_log where user_id < 71 [42001-224]
+2026-03-15 12:11:45.458097+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "CATEGORY" not found; SQL statement:
+-- ══ Fix categorie — migra vecchie categorie alle 4 nuove ══
+
+-- 1. Aggiorna o crea categoria ALTRO se non esiste
+INSERT INTO category (name, icon, description)
+SELECT 'ALTRO', '📱', 'Altro'
+WHERE NOT EXISTS (SELECT 1 FROM category WHERE name = 'ALTRO') [42102-224]
+2026-03-15 12:11:45.461098+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "APP" not found; SQL statement:
+-- 2. Sposta MESSAGING → SOCIAL
+UPDATE app SET category_id = (SELECT id FROM category WHERE name = 'SOCIAL')
+WHERE category_id = (SELECT id FROM category WHERE name = 'MESSAGING') [42102-224]
+2026-03-15 12:11:45.461098+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "APP" not found; SQL statement:
+-- 3. Sposta BROWSER → ALTRO
+UPDATE app SET category_id = (SELECT id FROM category WHERE name = 'ALTRO')
+WHERE category_id = (SELECT id FROM category WHERE name = 'BROWSER') [42102-224]
+2026-03-15 12:11:45.462097+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "APP" not found; SQL statement:
+-- 4. Sposta MUSIC → ALTRO
+UPDATE app SET category_id = (SELECT id FROM category WHERE name = 'ALTRO')
+WHERE category_id = (SELECT id FROM category WHERE name = 'MUSIC') [42102-224]
+2026-03-15 12:11:45.462097+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "APP" not found; SQL statement:
+-- 5. Sposta UTILITY → ALTRO
+UPDATE app SET category_id = (SELECT id FROM category WHERE name = 'ALTRO')
+WHERE category_id = (SELECT id FROM category WHERE name = 'UTILITY') [42102-224]
+2026-03-15 12:11:45.462097+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "CATEGORY" not found; SQL statement:
+-- 6. Elimina categorie obsolete
+DELETE FROM category WHERE name IN ('MESSAGING', 'BROWSER', 'MUSIC', 'UTILITY') [42102-224]
+2026-03-15 12:11:45.463098+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "CATEGORY" not found; SQL statement:
+-- Verifica
+SELECT c.name, COUNT(a.id) as num_app
+FROM category c
+LEFT JOIN app a ON a.category_id = c.id
+GROUP BY c.name
+ORDER BY c.name [42102-224]
+2026-03-15 12:13:10.591633+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "CATEGORY" not found; SQL statement:
+-- ══ Fix categorie — migra vecchie categorie alle 4 nuove ══
+ 
+-- 1. Aggiorna o crea categoria ALTRO se non esiste
+INSERT INTO category (name, icon, description)
+SELECT 'ALTRO', '📱', 'Altro'
+WHERE NOT EXISTS (SELECT 1 FROM category WHERE name = 'ALTRO') [42102-224]
+2026-03-15 12:15:17.881275+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "APP" not found; SQL statement:
+-- ══ Fix categorie — migra alle 4 categorie finali ══
+
+-- 1. Sposta app MESSAGING → SOCIAL (id 1)
+UPDATE app SET category_id = 1
+WHERE category_id = 2 [42102-224]
+2026-03-15 12:15:17.882275+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "APP" not found; SQL statement:
+-- 2. Sposta app BROWSER → ALTRO (id 8)
+UPDATE app SET category_id = 8
+WHERE category_id = 5 [42102-224]
+2026-03-15 12:15:17.882275+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "APP" not found; SQL statement:
+-- 3. Sposta app MUSIC → ALTRO (id 8)
+UPDATE app SET category_id = 8
+WHERE category_id = 6 [42102-224]
+2026-03-15 12:15:17.883275+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "APP" not found; SQL statement:
+-- 4. Sposta app UTILITY → ALTRO (id 8)
+UPDATE app SET category_id = 8
+WHERE category_id = 7 [42102-224]
+2026-03-15 12:15:17.884275+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "APP" not found; SQL statement:
+-- Verifica
+SELECT c.name, COUNT(a.id) as num_app
+FROM categories c
+LEFT JOIN app a ON a.category_id = c.id
+GROUP BY c.id, c.name
+ORDER BY c.name [42102-224]
+2026-03-21 15:33:24.567769+01:00 jdbc[86]: null
+org.h2.message.DbException: The connection was not closed by the application and is garbage collected [90018-224]
+	at org.h2.message.DbException.get(DbException.java:223)
+	at org.h2.message.DbException.get(DbException.java:199)
+	at org.h2.message.DbException.get(DbException.java:188)
+	at org.h2.jdbc.JdbcConnection.closeOld(JdbcConnection.java:218)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:135)
+	at org.h2.Driver.connect(Driver.java:59)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:138)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:359)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:201)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:470)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:733)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:712)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+Caused by: org.h2.jdbc.JdbcSQLNonTransientConnectionException: The connection was not closed by the application and is garbage collected [90018-224]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:690)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
+	... 16 more
