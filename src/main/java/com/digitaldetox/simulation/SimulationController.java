@@ -30,7 +30,7 @@ import java.util.Random;
 @RequestMapping("/api/simulation")
 @RequiredArgsConstructor
 @Slf4j
-@Profile("dev")
+//@Profile("dev")
 public class SimulationController {
 
     private final MockUsageGenerator generator;
