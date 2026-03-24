@@ -88,7 +88,10 @@ public class SecurityConfig {
                 "http://192.168.1.*:4200",
                 "https://*.ngrok-free.app",
                 "https://*.ngrok-free.dev",
-                "https://*.ngrok.io"
+                "https://*.ngrok.io",
+                "https://*.railway.app",
+                "capacitor://localhost",
+                "http://localhost"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
