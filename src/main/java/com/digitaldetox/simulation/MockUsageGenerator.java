@@ -14,16 +14,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
-@Component
 @RequiredArgsConstructor
 @Slf4j
-@Profile("dev")
+@Service
 public class MockUsageGenerator {
 
     private final AppSessionRepository sessionRepository;
