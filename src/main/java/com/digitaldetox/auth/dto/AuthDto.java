@@ -2,6 +2,7 @@ package com.digitaldetox.auth.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -9,25 +10,32 @@ public class AuthDto {
 
     @Data
     public static class RegisterRequest {
-        @NotBlank
-        @Size(min = 3, max = 50)
+
+        @NotBlank(message = "Username obbligatorio")
+        @Size(min = 3, max = 50, message = "Username deve essere tra 3 e 50 caratteri")
         private String username;
 
-        @NotBlank
-        @Email
+        @NotBlank(message = "Email obbligatoria")
+        @Email(message = "Formato email non valido")
         private String email;
 
-        @NotBlank
-        @Size(min = 6, max = 100)
+        @NotBlank(message = "Password obbligatoria")
+        @Pattern(
+                regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$",
+                message = "La password deve contenere almeno 8 caratteri, una maiuscola, una minuscola, un numero e un carattere speciale"
+        )
         private String password;
+
+        @NotBlank(message = "Conferma password obbligatoria")
+        private String confirmPassword;
     }
 
     @Data
     public static class LoginRequest {
-        @NotBlank
+        @NotBlank(message = "Username obbligatorio")
         private String username;
 
-        @NotBlank
+        @NotBlank(message = "Password obbligatoria")
         private String password;
     }
 
@@ -43,6 +51,7 @@ public class AuthDto {
         private String role;
         private int totalPoints;
         private int streakDays;
+        private boolean emailVerified;
     }
 
     @Data
@@ -57,5 +66,6 @@ public class AuthDto {
         private int totalPoints;
         private int streakDays;
         private String lastActive;
+        private boolean emailVerified;
     }
 }

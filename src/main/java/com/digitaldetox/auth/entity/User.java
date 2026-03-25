@@ -42,4 +42,8 @@ public class User {
     public enum Role {
         USER, ADMIN
     }
+
+    @Column(nullable = false)
+    private boolean emailVerified = false;
+
 }

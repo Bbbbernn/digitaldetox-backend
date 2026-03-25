@@ -2,23 +2,23 @@ spring:
   profiles:
     active: dev
 
-    spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME:mydetoxapp@gmail.com}
+    password: ${MAIL_PASSWORD:ugwttdanutdhroib}
+    properties:
       mail:
-        host: smtp.gmail.com
-        port: 587
-        username: ${MAIL_USERNAME}
-        password: ${MAIL_PASSWORD}
-        properties:
-          mail:
-            smtp:
-              auth: true
-              starttls:
-                enable: true
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 app:
   jwt:
     secret: "DigitalDetoxSuperSecretKeyForJWT2024ChangeInProduction!!"
     expiration-ms: 86400000
+  base-url: ${APP_BASE_URL:http://localhost:8080}
 
 # =========================
 # DEV (H2)
@@ -49,10 +49,6 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.H2Dialect
 
-  simulation:
-    enabled: true
-    schedule-cron: "0 */5 * * * *"
-
 logging:
   level:
     com.digitaldetox: DEBUG
@@ -78,14 +74,11 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update   # puoi mettere validate in futuro
+      ddl-auto: update
     show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-
-  simulation:
-    enabled: false
 
 logging:
   level:

@@ -21,7 +21,8 @@ public class AuthController {
     public ResponseEntity<ApiResponse<AuthDto.AuthResponse>> register(
             @Valid @RequestBody AuthDto.RegisterRequest request) {
         AuthDto.AuthResponse response = authService.register(request);
-        return ResponseEntity.ok(ApiResponse.success("Registrazione completata", response));
+        return ResponseEntity.ok(ApiResponse.success(
+                "Registrazione completata. Controlla la tua email per confermare l'account.", response));
     }
 
     @PostMapping("/login")
@@ -29,6 +30,13 @@ public class AuthController {
             @Valid @RequestBody AuthDto.LoginRequest request) {
         AuthDto.AuthResponse response = authService.login(request);
         return ResponseEntity.ok(ApiResponse.success("Login effettuato", response));
+    }
+
+    @GetMapping("/verify-email")
+    public ResponseEntity<ApiResponse<String>> verifyEmail(@RequestParam String token) {
+        String username = authService.verifyEmail(token);
+        return ResponseEntity.ok(ApiResponse.success(
+                "Email verificata con successo! Puoi ora accedere all'app.", username));
     }
 
     @GetMapping("/me")
