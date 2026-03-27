@@ -34,6 +34,7 @@ public class UsageService {
     private final UserRepository userRepository;
     private final GamificationService gamificationService;
     private final NotificationService notificationService;
+    private final PlayStoreCategoryResolver playStoreCategoryResolver;
 
     @Transactional
     public UsageDto.SessionResponse recordSession(String username, UsageDto.SessionRequest request) {
@@ -48,14 +49,24 @@ public class UsageService {
                                 .build()
                 ));
 
+        boolean[] isNewApp = {false};
+
         App app = appRepository.findByPackageName(request.getPackageName())
-                .orElseGet(() -> appRepository.save(
-                        App.builder()
-                                .packageName(request.getPackageName())
-                                .displayName(request.getDisplayName())
-                                .category(category)
-                                .build()
-                ));
+                .orElseGet(() -> {
+                    isNewApp[0] = true;
+                    return appRepository.save(
+                            App.builder()
+                                    .packageName(request.getPackageName())
+                                    .displayName(request.getDisplayName())
+                                    .category(category)
+                                    .build()
+                    );
+                });
+
+// Se è una nuova app, risolvi la categoria in background
+        if (isNewApp[0]) {
+            playStoreCategoryResolver.resolveAndUpdate(app.getId());
+        }
 
         LocalDate sessionDate = request.getSessionDate() != null ? request.getSessionDate() : LocalDate.now();
 
