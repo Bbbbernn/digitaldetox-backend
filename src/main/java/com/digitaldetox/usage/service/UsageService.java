@@ -77,12 +77,12 @@ public class UsageService {
                 .findByUserIdAndAppIdAndSessionDate(user.getId(), app.getId(), sessionDate)
                 .orElse(null);
 
+        boolean isNewSession = session == null;
+
         if (session != null) {
-            log.debug("Sessione esistente aggiornata: {} - {} - {}s", username, app.getDisplayName(), request.getDurationSec());
             session.setDurationSec(request.getDurationSec());
             session.setEndTime(LocalDateTime.now());
         } else {
-            log.debug("Nuova sessione registrata: {} - {} - {}s", username, app.getDisplayName(), request.getDurationSec());
             LocalDateTime now = LocalDateTime.now();
             session = AppSession.builder()
                     .user(user)
@@ -95,11 +95,14 @@ public class UsageService {
         }
 
         session = sessionRepository.save(session);
-        // Collega uso al tamagotchi
-        applyTamagotchiEffect(user, app.getCategory().getName(), request.getDurationSec());
 
         gamificationService.processUsageSession(user, app.getCategory(), request.getDurationSec());
         notificationService.checkLimitsForUser(user, category, sessionDate);
+
+// Effetto tamagotchi solo per sessioni nuove, non per aggiornamenti
+        if (isNewSession) {
+            applyTamagotchiEffect(user, app.getCategory().getName(), request.getDurationSec());
+        }
 
         return UsageDto.SessionResponse.builder()
                 .id(session.getId())
