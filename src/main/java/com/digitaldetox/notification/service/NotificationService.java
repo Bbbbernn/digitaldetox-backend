@@ -4,6 +4,7 @@ import com.digitaldetox.auth.entity.User;
 import com.digitaldetox.notification.dto.NotificationDto;
 import com.digitaldetox.notification.entity.UserLimit;
 import com.digitaldetox.notification.repository.UserLimitRepository;
+import com.digitaldetox.tamagotchi.service.TamagotchiService;
 import com.digitaldetox.usage.entity.Category;
 import com.digitaldetox.usage.repository.AppSessionRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class NotificationService {
 
     private final UserLimitRepository limitRepository;
     private final AppSessionRepository sessionRepository;
+    private final TamagotchiService tamagotchiService;
 
     @Transactional(readOnly = true)
     public List<NotificationDto.LimitAlert> checkLimitsForUser(User user, Category category, LocalDate date) {
@@ -41,6 +43,7 @@ public class NotificationService {
                         int usedMin = usedSec / 60;
                         log.info("Limite superato per {}: {} min su {} min di {}",
                                 user.getUsername(), usedMin, limit.getDailyLimitMin(), category.getName());
+                        tamagotchiService.processOveruse(user);
 
                         alerts.add(NotificationDto.LimitAlert.builder()
                                 .categoryName(category.getName())

@@ -5,6 +5,7 @@ import com.digitaldetox.auth.repository.UserRepository;
 import com.digitaldetox.common.exception.ResourceNotFoundException;
 import com.digitaldetox.gamification.service.GamificationService;
 import com.digitaldetox.notification.service.NotificationService;
+import com.digitaldetox.tamagotchi.service.TamagotchiService;
 import com.digitaldetox.usage.dto.UsageDto;
 import com.digitaldetox.usage.entity.App;
 import com.digitaldetox.usage.entity.AppSession;
@@ -35,6 +36,7 @@ public class UsageService {
     private final GamificationService gamificationService;
     private final NotificationService notificationService;
     private final PlayStoreCategoryResolver playStoreCategoryResolver;
+    private final TamagotchiService tamagotchiService;
 
     @Transactional
     public UsageDto.SessionResponse recordSession(String username, UsageDto.SessionRequest request) {
@@ -93,6 +95,8 @@ public class UsageService {
         }
 
         session = sessionRepository.save(session);
+        // Collega uso al tamagotchi
+        applyTamagotchiEffect(user, app.getCategory().getName(), request.getDurationSec());
 
         gamificationService.processUsageSession(user, app.getCategory(), request.getDurationSec());
         notificationService.checkLimitsForUser(user, category, sessionDate);
@@ -217,6 +221,19 @@ public class UsageService {
         return sessionRepository.findFirstSessionDate(user.getId())
                 .map(LocalDate::toString)
                 .orElse(LocalDate.now().toString());
+    }
+
+    private void applyTamagotchiEffect(User user, String categoryName, int durationSec) {
+        int durationMin = durationSec / 60;
+        boolean isHeavyCategory = categoryName.equals("SOCIAL") || categoryName.equals("VIDEO");
+
+        // Overuse: >45 min di social/video O >90 min di qualsiasi categoria
+        if ((isHeavyCategory && durationMin > 45) || durationMin > 90) {
+            tamagotchiService.processOveruse(user);
+        } else if (durationMin < 20) {
+            // Uso contenuto: meno di 20 min → buona abitudine
+            tamagotchiService.processGoodHabit(user);
+        }
     }
 
 }
