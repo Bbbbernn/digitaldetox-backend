@@ -67,4 +67,12 @@ public class UsageController {
         List<UsageDto.HourlyDistribution> result = usageService.getHourlyDistribution(userDetails.getUsername(), from, to);
         return ResponseEntity.ok(ApiResponse.success(result));
     }
+
+    @GetMapping("/first-date")
+    public ResponseEntity<ApiResponse<String>> getFirstDate(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        String firstDate = usageService.getFirstSessionDate(userDetails.getUsername());
+        return ResponseEntity.ok(ApiResponse.success(firstDate));
+    }
+
 }

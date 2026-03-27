@@ -209,4 +209,14 @@ public class UsageService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public String getFirstSessionDate(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Utente non trovato"));
+        return sessionRepository.findFirstSessionDate(user.getId())
+                .map(LocalDate::toString)
+                .orElse(LocalDate.now().toString());
+    }
+
 }

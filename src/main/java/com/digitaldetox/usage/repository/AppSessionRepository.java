@@ -78,4 +78,8 @@ public interface AppSessionRepository extends JpaRepository<AppSession, Long> {
             @Param("to") LocalDate to);
 
     Optional<AppSession> findByUserIdAndAppIdAndSessionDate(Long userId, Long appId, LocalDate sessionDate);
+
+    @Query("SELECT MIN(s.sessionDate) FROM AppSession s WHERE s.user.id = :userId")
+    Optional<LocalDate> findFirstSessionDate(@Param("userId") Long userId);
+
 }
