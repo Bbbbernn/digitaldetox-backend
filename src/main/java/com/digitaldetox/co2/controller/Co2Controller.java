@@ -41,4 +41,19 @@ public class Co2Controller {
         return ResponseEntity.ok(ApiResponse.success(
                 co2Service.getPeriod(userDetails.getUsername(), from, to)));
     }
+
+    @GetMapping("/today/consumed")
+    public ResponseEntity<ApiResponse<Co2Dto.Co2Consumed>> getTodayConsumed(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(ApiResponse.success(
+                co2Service.getTodayConsumed(userDetails.getUsername())));
+    }
+
+    @GetMapping("/week/consumed")
+    public ResponseEntity<ApiResponse<Co2Dto.Co2Consumed>> getWeekConsumed(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(ApiResponse.success(
+                co2Service.getWeekConsumed(userDetails.getUsername())));
+    }
+
 }
