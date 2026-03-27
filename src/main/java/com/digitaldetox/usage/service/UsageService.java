@@ -58,24 +58,32 @@ public class UsageService {
                 ));
 
         LocalDate sessionDate = request.getSessionDate() != null ? request.getSessionDate() : LocalDate.now();
-        LocalDateTime now = LocalDateTime.now();
 
-        AppSession session = AppSession.builder()
-                .user(user)
-                .app(app)
-                .startTime(now.minusSeconds(request.getDurationSec()))
-                .endTime(now)
-                .durationSec(request.getDurationSec())
-                .sessionDate(sessionDate)
-                .build();
+        // Upsert: aggiorna se esiste già una riga per (user, app, data), altrimenti crea
+        AppSession session = sessionRepository
+                .findByUserIdAndAppIdAndSessionDate(user.getId(), app.getId(), sessionDate)
+                .orElse(null);
+
+        if (session != null) {
+            log.debug("Sessione esistente aggiornata: {} - {} - {}s", username, app.getDisplayName(), request.getDurationSec());
+            session.setDurationSec(request.getDurationSec());
+            session.setEndTime(LocalDateTime.now());
+        } else {
+            log.debug("Nuova sessione registrata: {} - {} - {}s", username, app.getDisplayName(), request.getDurationSec());
+            LocalDateTime now = LocalDateTime.now();
+            session = AppSession.builder()
+                    .user(user)
+                    .app(app)
+                    .startTime(now.minusSeconds(request.getDurationSec()))
+                    .endTime(now)
+                    .durationSec(request.getDurationSec())
+                    .sessionDate(sessionDate)
+                    .build();
+        }
 
         session = sessionRepository.save(session);
-        log.debug("Sessione registrata: {} - {} - {}s", username, app.getDisplayName(), request.getDurationSec());
 
-        // Aggiorna punti gamification per ogni sessione registrata
         gamificationService.processUsageSession(user, app.getCategory(), request.getDurationSec());
-
-        // Controlla se limiti superati
         notificationService.checkLimitsForUser(user, category, sessionDate);
 
         return UsageDto.SessionResponse.builder()

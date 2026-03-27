@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AppSessionRepository extends JpaRepository<AppSession, Long> {
@@ -75,4 +76,6 @@ public interface AppSessionRepository extends JpaRepository<AppSession, Long> {
             @Param("userId") Long userId,
             @Param("from") LocalDate from,
             @Param("to") LocalDate to);
+
+    Optional<AppSession> findByUserIdAndAppIdAndSessionDate(Long userId, Long appId, LocalDate sessionDate);
 }
