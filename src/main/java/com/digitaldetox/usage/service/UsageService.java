@@ -130,15 +130,16 @@ public class UsageService {
             total += secs;
         }
 
-        List<Object[]> topAppsRaw = sessionRepository.sumDurationByAppForPeriod(user.getId(), date, date);
+        List<Object[]> topAppsRaw = sessionRepository.sumDurationByAppForPeriodWithPackage(user.getId(), date, date);
         int finalTotal = total;
         List<UsageDto.AppUsageItem> topApps = topAppsRaw.stream()
                 .limit(5)
                 .map(row -> UsageDto.AppUsageItem.builder()
-                        .appName((String) row[0])
-                        .categoryName((String) row[1])
-                        .totalSeconds(((Number) row[2]).intValue())
-                        .percentOfTotal(finalTotal > 0 ? ((Number) row[2]).doubleValue() / finalTotal * 100 : 0)
+                        .packageName((String) row[0])
+                        .appName((String) row[1])
+                        .categoryName((String) row[2])
+                        .totalSeconds(((Number) row[3]).intValue())
+                        .percentOfTotal(finalTotal > 0 ? ((Number) row[3]).doubleValue() / finalTotal * 100 : 0)
                         .build())
                 .collect(Collectors.toList());
 

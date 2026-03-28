@@ -93,4 +93,18 @@ public interface AppSessionRepository extends JpaRepository<AppSession, Long> {
             @Param("userId") Long userId,
             @Param("from") LocalDate from,
             @Param("to") LocalDate to);
+
+    @Query("""
+    SELECT s.app.packageName, s.app.displayName, s.app.category.name, SUM(s.durationSec)
+    FROM AppSession s
+    WHERE s.user.id = :userId
+    AND s.sessionDate BETWEEN :from AND :to
+    GROUP BY s.app.id, s.app.packageName, s.app.displayName, s.app.category.name
+    ORDER BY SUM(s.durationSec) DESC
+""")
+    List<Object[]> sumDurationByAppForPeriodWithPackage(
+            @Param("userId") Long userId,
+            @Param("from") LocalDate from,
+            @Param("to") LocalDate to);
+
 }

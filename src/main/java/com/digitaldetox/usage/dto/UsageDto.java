@@ -75,6 +75,7 @@ public class UsageDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class AppUsageItem {
+        private String packageName;
         private String appName;
         private String categoryName;
         private int totalSeconds;
