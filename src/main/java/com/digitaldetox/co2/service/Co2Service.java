@@ -138,10 +138,31 @@ public class Co2Service {
     }
 
     private String buildEquivalentConsumed(double grams) {
-        if (grams >= 120) return String.format("Come percorrere %.1f km in auto", grams / 120.0);
-        if (grams >= 36)  return String.format("Come %.1f ore di streaming", grams / 36.0);
-        if (grams >= 1)   return String.format("Come caricare il telefono %.0f volte", grams / 0.3);
-        return "Ottimo utilizzo oggi! 🌱";
+        if (grams >= 1000) {
+            return String.format("Come guidare per %.0f km su un'autostrada 🛣️", grams / 120.0);
+        }
+        if (grams >= 500) {
+            return String.format("Come %.1f ore di volo in aereo ✈️", grams / 200.0);
+        }
+        if (grams >= 120) {
+            return String.format("Come percorrere %.1f km in auto 🚗", grams / 120.0);
+        }
+        if (grams >= 50) {
+            return String.format("Come %.0f minuti di streaming video in 4k 📺", grams / 0.6);
+        }
+        if (grams >= 20) {
+            return String.format("Come bollire %.0f tazze di acqua ☕", grams / 5.0);
+        }
+        if (grams >= 10) {
+            return String.format("Come tenere accesa una lampadina LED per %.0f ore 💡", grams / 1.0);
+        }
+        if (grams >= 3) {
+            return String.format("Come caricare il telefono %.0f volte 🔋", grams / 0.3);
+        }
+        if (grams >= 1) {
+            return String.format("Come inviare %.0f email 📧", grams / 0.004);
+        }
+        return "Ottimo utilizzo oggi! Il tuo impatto è minimo 🌱";
     }
 
     private String buildEquivalentSaved(double grams) {
