@@ -52,6 +52,7 @@ public class AuthDto {
         private int totalPoints;
         private int streakDays;
         private boolean emailVerified;
+        private boolean onboarded;
     }
 
     @Data

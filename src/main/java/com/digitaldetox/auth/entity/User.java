@@ -46,4 +46,6 @@ public class User {
     @Column(nullable = false)
     private boolean emailVerified = false;
 
+    @Column(nullable = false)
+    private boolean onboarded = false;
 }

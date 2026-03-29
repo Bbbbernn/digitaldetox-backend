@@ -170,4 +170,13 @@ public class AuthService {
                 .emailVerified(user.isEmailVerified())
                 .build();
     }
+
+    @Transactional
+    public void markOnboarded(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Utente non trovato"));
+        user.setOnboarded(true);
+        userRepository.save(user);
+    }
+
 }

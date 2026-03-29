@@ -45,4 +45,12 @@ public class AuthController {
         AuthDto.UserProfileResponse profile = authService.getProfile(userDetails.getUsername());
         return ResponseEntity.ok(ApiResponse.success("Profilo utente", profile));
     }
+
+    @PostMapping("/onboarded")
+    public ResponseEntity<ApiResponse<Void>> markOnboarded(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        authService.markOnboarded(userDetails.getUsername());
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
 }
