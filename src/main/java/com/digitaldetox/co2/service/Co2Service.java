@@ -154,10 +154,10 @@ public class Co2Service {
             return String.format("Come bollire %.0f tazze di acqua ☕", grams / 5.0);
         }
         if (grams >= 10) {
-            return String.format("Come tenere accesa una lampadina LED per %.0f ore 💡", grams / 1.0);
+            return String.format("Come tenere accesa una lampadina LED per %.0f ore 💡", grams);
         }
         if (grams >= 3) {
-            return String.format("Come caricare il telefono %.0f volte 🔋", grams / 0.3);
+            return String.format("Come caricare il telefono %.0f volte 🔋", grams / 2.0);
         }
         if (grams >= 1) {
             return String.format("Come inviare %.0f email 📧", grams / 0.004);
