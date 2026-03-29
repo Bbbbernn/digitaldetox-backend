@@ -62,27 +62,27 @@ public class TamagotchiService {
 
     @Transactional
     public void processGoodHabit(User user) {
-        applyEvent(user, TamagotchiEvent.EventType.GOOD_HABIT, +5, +3, +4,
-                "Uso ridotto — buona abitudine!");
+        applyEvent(user, TamagotchiEvent.EventType.GOOD_HABIT, +2, +1, +2,
+                "Uso contenuto oggi 👍");
     }
 
     @Transactional
     public void processOveruse(User user) {
         applyEvent(user, TamagotchiEvent.EventType.OVERUSE, -10, -7, -5,
-                "Uso eccessivo del telefono");
+                "Troppo tempo su social/video oggi 📱");
     }
 
     @Transactional
     public void processFocusComplete(User user) {
         applyEvent(user, TamagotchiEvent.EventType.FOCUS_COMPLETE, +8, +5, +6,
-                "Sessione focus completata!");
+                "Sessione focus completata! 🎯");
     }
 
     @Transactional
     public void processStreakBonus(User user, int streakDays) {
         int bonus = streakDays >= 30 ? 20 : 10;
         applyEvent(user, TamagotchiEvent.EventType.STREAK_BONUS, bonus, bonus, bonus,
-                "Streak di " + streakDays + " giorni raggiunto!");
+                "🔥 " + streakDays + " giorni di streak!");
     }
 
     @Transactional(readOnly = true)

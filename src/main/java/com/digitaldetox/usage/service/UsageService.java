@@ -227,16 +227,22 @@ public class UsageService {
                 .orElse(LocalDate.now().toString());
     }
 
+    private static final java.util.Set<String> processedTodayTama =
+            java.util.Collections.synchronizedSet(new java.util.HashSet<>());
+
     private void applyTamagotchiEffect(User user, String categoryName, int durationSec) {
+        String key = user.getId() + "_" + LocalDate.now();
+        if (processedTodayTama.contains(key)) return;
+
         int durationMin = durationSec / 60;
         boolean isHeavyCategory = categoryName.equals("SOCIAL") || categoryName.equals("VIDEO");
 
-        // Overuse: >45 min di social/video O >90 min di qualsiasi categoria
         if ((isHeavyCategory && durationMin > 45) || durationMin > 90) {
             tamagotchiService.processOveruse(user);
+            processedTodayTama.add(key);
         } else if (durationMin < 20) {
-            // Uso contenuto: meno di 20 min → buona abitudine
             tamagotchiService.processGoodHabit(user);
+            processedTodayTama.add(key);
         }
     }
 
