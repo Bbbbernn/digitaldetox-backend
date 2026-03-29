@@ -168,6 +168,7 @@ public class AuthService {
                 .totalPoints(user.getTotalPoints())
                 .streakDays(user.getStreakDays())
                 .emailVerified(user.isEmailVerified())
+                .onboarded(user.isOnboarded())
                 .build();
     }
 
