@@ -5,6 +5,7 @@ import com.digitaldetox.auth.repository.UserRepository;
 import com.digitaldetox.common.exception.ResourceNotFoundException;
 import com.digitaldetox.gamification.service.GamificationService;
 import com.digitaldetox.notification.service.NotificationService;
+import com.digitaldetox.tamagotchi.repository.TamagotchiEventRepository;
 import com.digitaldetox.tamagotchi.service.TamagotchiService;
 import com.digitaldetox.usage.dto.UsageDto;
 import com.digitaldetox.usage.entity.App;
@@ -37,6 +38,7 @@ public class UsageService {
     private final NotificationService notificationService;
     private final PlayStoreCategoryResolver playStoreCategoryResolver;
     private final TamagotchiService tamagotchiService;
+    private final TamagotchiEventRepository tamagotchiEventRepository;
 
     @Transactional
     public UsageDto.SessionResponse recordSession(String username, UsageDto.SessionRequest request) {
@@ -231,18 +233,18 @@ public class UsageService {
             java.util.Collections.synchronizedSet(new java.util.HashSet<>());
 
     private void applyTamagotchiEffect(User user, String categoryName, int durationSec) {
-        String key = user.getId() + "_" + LocalDate.now();
-        if (processedTodayTama.contains(key)) return;
+        // Controlla nel DB se abbiamo già applicato un effetto uso oggi
+        long eventsToday = tamagotchiEventRepository
+                .countUsageEventsByUserIdAndDate(user.getId(), LocalDate.now());
+        if (eventsToday > 0) return;
 
         int durationMin = durationSec / 60;
         boolean isHeavyCategory = categoryName.equals("SOCIAL") || categoryName.equals("VIDEO");
 
         if ((isHeavyCategory && durationMin > 45) || durationMin > 90) {
             tamagotchiService.processOveruse(user);
-            processedTodayTama.add(key);
         } else if (durationMin < 20) {
             tamagotchiService.processGoodHabit(user);
-            processedTodayTama.add(key);
         }
     }
 
