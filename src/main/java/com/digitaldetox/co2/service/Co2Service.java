@@ -32,7 +32,9 @@ public class Co2Service {
     }
 
     public Co2Dto.Co2Summary getWeek(String username) {
-        return getSavedSummary(username, LocalDate.now().minusDays(6), LocalDate.now());
+        LocalDate today = LocalDate.now();
+        LocalDate monday = today.with(java.time.DayOfWeek.MONDAY);
+        return getSavedSummary(username, monday, today);
     }
 
     public Co2Dto.Co2Summary getPeriod(String username, LocalDate from, LocalDate to) {
@@ -44,7 +46,9 @@ public class Co2Service {
     }
 
     public Co2Dto.Co2Consumed getWeekConsumed(String username) {
-        return getConsumedSummary(username, LocalDate.now().minusDays(6), LocalDate.now());
+        LocalDate today = LocalDate.now();
+        LocalDate monday = today.with(java.time.DayOfWeek.MONDAY);
+        return getConsumedSummary(username, monday, today);
     }
 
     private Co2Dto.Co2Summary getSavedSummary(String username, LocalDate from, LocalDate to) {
