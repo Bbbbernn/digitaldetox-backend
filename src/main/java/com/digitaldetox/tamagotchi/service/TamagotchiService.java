@@ -63,13 +63,13 @@ public class TamagotchiService {
     @Transactional
     public void processGoodHabit(User user) {
         applyEvent(user, TamagotchiEvent.EventType.GOOD_HABIT, +2, +1, +2,
-                "Uso contenuto oggi 👍");
+                "Meno di 6 ore di schermo oggi 🌟");
     }
 
     @Transactional
     public void processOveruse(User user) {
         applyEvent(user, TamagotchiEvent.EventType.OVERUSE, -10, -7, -5,
-                "Troppo tempo su social/video oggi 📱");
+                "Più di 6 ore di schermo oggi 📱");
     }
 
     @Transactional

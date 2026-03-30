@@ -5,8 +5,6 @@ import com.digitaldetox.auth.repository.UserRepository;
 import com.digitaldetox.common.exception.ResourceNotFoundException;
 import com.digitaldetox.gamification.service.GamificationService;
 import com.digitaldetox.notification.service.NotificationService;
-import com.digitaldetox.tamagotchi.repository.TamagotchiEventRepository;
-import com.digitaldetox.tamagotchi.service.TamagotchiService;
 import com.digitaldetox.usage.dto.UsageDto;
 import com.digitaldetox.usage.entity.App;
 import com.digitaldetox.usage.entity.AppSession;
@@ -37,8 +35,6 @@ public class UsageService {
     private final GamificationService gamificationService;
     private final NotificationService notificationService;
     private final PlayStoreCategoryResolver playStoreCategoryResolver;
-    private final TamagotchiService tamagotchiService;
-    private final TamagotchiEventRepository tamagotchiEventRepository;
 
     @Transactional
     public UsageDto.SessionResponse recordSession(String username, UsageDto.SessionRequest request) {
@@ -100,11 +96,6 @@ public class UsageService {
 
         gamificationService.processUsageSession(user, app.getCategory(), request.getDurationSec());
         notificationService.checkLimitsForUser(user, category, sessionDate);
-
-// Effetto tamagotchi solo per sessioni nuove, non per aggiornamenti
-        if (isNewSession) {
-            applyTamagotchiEffect(user, app.getCategory().getName(), request.getDurationSec());
-        }
 
         return UsageDto.SessionResponse.builder()
                 .id(session.getId())
@@ -228,24 +219,4 @@ public class UsageService {
                 .map(LocalDate::toString)
                 .orElse(LocalDate.now().toString());
     }
-
-    private static final java.util.Set<String> processedTodayTama =
-            java.util.Collections.synchronizedSet(new java.util.HashSet<>());
-
-    private void applyTamagotchiEffect(User user, String categoryName, int durationSec) {
-        // Controlla nel DB se abbiamo già applicato un effetto uso oggi
-        long eventsToday = tamagotchiEventRepository
-                .countUsageEventsByUserIdAndDate(user.getId(), LocalDate.now());
-        if (eventsToday > 0) return;
-
-        int durationMin = durationSec / 60;
-        boolean isHeavyCategory = categoryName.equals("SOCIAL") || categoryName.equals("VIDEO");
-
-        if ((isHeavyCategory && durationMin > 45) || durationMin > 90) {
-            tamagotchiService.processOveruse(user);
-        } else if (durationMin < 20) {
-            tamagotchiService.processGoodHabit(user);
-        }
-    }
-
 }
