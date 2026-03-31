@@ -65,13 +65,13 @@ public interface AppSessionRepository extends JpaRepository<AppSession, Long> {
             @Param("to") LocalDate to);
 
     @Query("""
-        SELECT HOUR(s.startTime), SUM(s.durationSec)
-        FROM AppSession s
-        WHERE s.user.id = :userId
-        AND s.sessionDate BETWEEN :from AND :to
-        GROUP BY HOUR(s.startTime)
-        ORDER BY HOUR(s.startTime)
-    """)
+    SELECT HOUR(s.endTime), SUM(s.durationSec)
+    FROM AppSession s
+    WHERE s.user.id = :userId
+    AND s.sessionDate BETWEEN :from AND :to
+    GROUP BY HOUR(s.endTime)
+    ORDER BY HOUR(s.endTime)
+""")
     List<Object[]> usageByHourOfDay(
             @Param("userId") Long userId,
             @Param("from") LocalDate from,

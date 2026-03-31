@@ -27,7 +27,7 @@ public class PlayStoreCategoryResolver {
         if (playStoreCategory == null) return "ALTRO";
         String cat = playStoreCategory.toLowerCase();
         if (cat.contains("social") || cat.contains("communication") || cat.contains("messaging")) return "SOCIAL";
-        if (cat.contains("video") || cat.contains("entertainment") || cat.contains("streaming")) return "VIDEO";
+        if (cat.contains("video") || cat.contains("entertainment") || cat.contains("streaming") || cat.contains("music")) return "MUSIC/VIDEO";
         if (cat.contains("game") || cat.contains("puzzle") || cat.contains("arcade") || cat.contains("racing")) return "GAMES";
         return "ALTRO";
     }
